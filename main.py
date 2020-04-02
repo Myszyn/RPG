@@ -1,4 +1,4 @@
-from classes.game import Postac, bcolors
+from classes.game import Person, bcolors
 
 
 
@@ -10,23 +10,23 @@ player = Postac(50,500,75,10,magic)
 enemy = Postac(40,2000,50,30,magic)
 
 
-gra = True
-print("wróg atakuje")
+game = True
+print("An enemy attack")
 
-while(gra):
+while(game):
     print("======================================")
     player.choose_action()
-    choice = input("wybierz akcje")
-    liczba = int(choice)-1
-    print("wybrales ",player.actions[liczba])
+    choice = input("choose action")
+    number = int(choice)-1
+    print("you choose ",player.actions[number])
 
-    if liczba == 0:
+    if number == 0:
         dmg = player.generate_dmg()
         enemy.take_dmg(dmg)
-        print("zaatakowales za",dmg, "punktow zycia. Zycie wroga: ", enemy.get_hp())
+        print("you attack for",dmg, "life points. Enemy life: ", enemy.get_hp())
 
     enemy_choice = 1
 
     enemy_dmg = enemy.generate_dmg()
     player.take_dmg(enemy_dmg)
-    print("wrog zaatakowal za",enemy_dmg,"punktow zycia. Twoje życie: ",player.get_hp())
+    print("Enemy attack for",enemy_dmg,"life point. Your life: ",player.get_hp())
