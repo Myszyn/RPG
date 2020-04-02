@@ -1,4 +1,1 @@
-RPG - this is a turn-based game. In this game we can attack enemies or protect yourself. We can use magic too. If you want play this game download game files take to the same folder and open main.py file.
-This game is creating thanks "the Complete Python 3 Course: Beginner to Advanced!" course done by Joseph Delgadillo and Nick Germaine.
-I'am coding this game because I want increase my programer skills.
-
+RPG - this is a turn-based game. In this game, we can attack enemies or protect ourselves. We can use magic too. If you want to play this game download game files, move them to the same folder and open the main.py file. This game is created thanks to "the Complete Python 3 Course: Beginner to Advanced!" course done by Joseph Delgadillo and Nick Germaine. I'm coding this game because I want to increase my programmer skills.
