@@ -10,7 +10,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-class Postac:
+class Person:
     def __init__(self,atc, hp, mp, df, magic):
         self.atkl = atc-10
         self.atkh =  atc+10
