@@ -1,4 +1,6 @@
 import random
+from classes.magic import Spell
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -25,52 +27,57 @@ class Person:
         self.dodge = dodge
     def generate_dmg(self):
         return random.randrange(self.atkl,self.atkh)
+
     def generate_spelldmg(self,i):
         mgl = self.magic[i]["dmg"]-5
         mgh = self.magic[i]["dmg"]+5
         return random.randrange(mgl,mgh)
+
     def dodge_chance(self):
         chance = random.randrange(1,100)
         if self.dodge<chance:
             return True
         else:
-            return False      
+            return False    
+
+    def heal(self,dmg):
+        self.hp+=dmg
+        
     def take_dmg(self,dmg):
         self.hp-=dmg
         if self.hp<0:
             self.hp=0
         return self.hp
+
     def get_hp(self):
         return self.hp
+
     def get_mp(self):
         return self.mp
+
     def get_atc(self):
         return self.atc
+
     def reduce_mp(self,cost):
         self.mp-=cost
         if self.mp<0:
             self.mp=0
-    def get_spell(self,i):
-        return self.magic[i]["name"]
-    def get_spell_mp_cost(self,i):
-        return self.magic[i]["cost"]
+
     def choose_action(self):
         i=1
         print("ACTIONS")
         for item in self.actions:
             print(str(i),":",item)
             i+=1
+
     def choose_magic(self):
         print("MAGIC")
         i = 1 
         for spell in self.magic:
-            print(str(i),":",spell["name"],"cost:",str(spell["cost"]),"damage:",str(spell["dmg"]))
+            print(str(i),":",spell.name,"cost:",str(spell.cost),"damage:",str(spell.dmg))
             i+=1 
+
     def generate_information(self,atc,hp):
         print(hp , " life points","/",atc,"attack points")
-
-
-
-
 
 
