@@ -1,13 +1,24 @@
 from classes.game import Person, bcolors
+from classes.magic import Spell
 
 
 
-magic = [{"name":"fire","cost":10,"dmg":50},
-         {"name":"zap","cost":20,"dmg":150},
-         {"name":"earthquake","cost":13,"dmg":75}]
 
-player = Person(50,500,75,10,magic,10)
-enemy = Person(40,1200,50,30,magic,3)
+#dark magic(attack)
+fire = Spell("fire",20,150,"dark")
+zap = Spell("zap",10,50,"dark")
+earthquake = Spell("earthquake",5,40,"dark")
+blizzard = Spell("blizzard",13,75,"dark")
+apocalipto = Spell("apocalipto",50,300,"dark")
+
+#light magic(heal)
+heal = Spell("heal",10,50,"light")
+healius = Spell("healius",25,225,"light")
+
+
+
+player = Person(50,500,75,10,[fire,zap,blizzard,heal],10)
+enemy = Person(40,1200,50,30,[],3)
 
 player_hp = player.get_hp()
 enemy_hp = enemy.get_hp()
@@ -25,7 +36,6 @@ while(game):
     print("======================================")
     player.choose_action()
     choice = input("choose action")
-
     number = int(choice)-1
     print("you choose ",player.actions[number])
 
@@ -40,11 +50,24 @@ while(game):
         print("You have ",player.get_mp(),"magic points")
         player.choose_magic()
         magic_choose = int(input("choose magic: "))-1
-        magic_dmg = player.generate_spelldmg(magic_choose)
-        enemy.take_dmg(magic_dmg)
-        mp_cost = player.get_spell_mp_cost(magic_choose)
-        player.reduce_mp(mp_cost)
-        print("You attack enemy for",magic_dmg,"life point. Enemy Life", enemy.get_hp())
+       
+       
+        spell = player.magic[magic_choose]
+        spell_dmg = spell.generate_damage()
+
+  
+        if spell.cost>player.mp:
+            print("not enough mp")
+            continue
+        if spell.type=="dark":
+            player.reduce_mp(spell.cost)
+            enemy.take_dmg(spell_dmg)
+            print("You attack enemy for",spell.dmg,"life point. Enemy Life", enemy.get_hp())
+        elif spell.type=="light":
+            player.reduce_mp(spell.cost)
+            player.heal(spell_dmg)
+            print("you heal yourself for",spell.dmg,"life point. Your Life", player.get_hp())
+
     enemy_choice = 1
 
     if player.dodge_chance():
@@ -53,6 +76,10 @@ while(game):
         print("Enemy attack for",enemy_dmg,"life point. Your life: ",player.get_hp())
     else:
         print("you dodge the attack")
+
+    print("===========================================")
+    print("Your hp: ",player.get_hp(),"/",player.mhp)
+    print("Enemy hp: ",enemy.get_hp(),"/",enemy.mhp)
 
     if player.get_hp()==0:
         print("You lose")
