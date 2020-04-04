@@ -1,5 +1,6 @@
 import random
 from classes.magic import Spell
+from classes.item import Armor, Items
 
 
 class bcolors:
@@ -13,7 +14,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Person:
-    def __init__(self,atc, hp, mp, df, magic, dodge):
+    def __init__(self,atc, hp, mp, df, magic, dodge,armor,items):
         self.atc = atc
         self.atkl = atc-10
         self.atkh =  atc+10
@@ -23,8 +24,11 @@ class Person:
         self.mmp = mp
         self.df = df
         self.magic = magic
-        self.actions = ["Attack ","Magic"]
+        self.armor = armor
+        self.actions = ["Attack ","Magic","Items"]
         self.dodge = dodge
+        self.items = items
+
     def generate_dmg(self):
         return random.randrange(self.atkl,self.atkh)
 
@@ -42,6 +46,8 @@ class Person:
 
     def heal(self,dmg):
         self.hp+=dmg
+        if self.mhp<self.hp:
+            self.hp=self.mhp
         
     def take_dmg(self,dmg):
         self.hp-=dmg
@@ -69,7 +75,7 @@ class Person:
         for item in self.actions:
             print(str(i),":",item)
             i+=1
-
+#==========================CHOOSE_STH=============================================================
     def choose_magic(self):
         print("MAGIC")
         i = 1 
@@ -77,7 +83,18 @@ class Person:
             print(str(i),":",spell.name,"cost:",str(spell.cost),"damage:",str(spell.dmg))
             i+=1 
 
-    def generate_information(self,atc,hp):
-        print(hp , " life points","/",atc,"attack points")
-
-
+    def choose_armor(self):
+        print("Choose armor")
+        i=1
+        for item in self.armor:
+            print(str(i),":",armor.name,"attack:",str(armor.atc),"health points:",str(armor.hp))
+            i+=1
+    def choose_items(self):
+        print("Choose items")
+        i=1
+        for items in self.items:
+            print(str(i),":",items.name,"  :",str(items.description),"(x",items.quantity,")")
+            i+=1
+#==========================================================================================================
+    def generate_information(self):
+        print(self.hp , " life points","/",self.atc,"attack points")
