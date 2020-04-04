@@ -95,6 +95,6 @@ class Person:
         for items in self.items:
             print(str(i),":",items.name,"  :",str(items.description),"(x",items.quantity,")")
             i+=1
-#==========================================================================================================
+#=========================================================================================================
     def generate_information(self):
         print(self.hp , " life points","/",self.atc,"attack points")
