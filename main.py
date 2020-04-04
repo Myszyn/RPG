@@ -51,6 +51,9 @@ items =[potion,hipotion,megaelixer,granade]
 
 #persons
 player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius],10,[],items) 
+player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius],10,[],items) 
+player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius],10,[],items) 
+
 enemy = Person(40,1200,50,30,[],3,[],[])
 
 
@@ -71,11 +74,18 @@ player.generate_information()
 
 
 while(game):
+#=======================================ACTIONS=====================================
     print("======================================")
     player.choose_action()
     choice = input("Choose action :")
     number = int(choice)-1
+    check_number =len(player.items)
+    if number+1>=check_number:
+        print("Wrong numer")
+        continue
+
     print("you choose ",player.actions[number])
+    
 #=======================================ATTACK========================================
     if number == 0:
         dmg = player.generate_dmg()
@@ -89,6 +99,10 @@ while(game):
         print("You have ",player.get_mp(),"magic points")
         player.choose_magic()
         magic_choose = int(input("choose magic: "))-1
+        check_number =len(player.magic)
+        if magic_choose+1>=check_number:
+            print("Wrong numer")        
+            continue
         if magic_choose==-1:
             continue
        
@@ -115,8 +129,14 @@ while(game):
         if len(player.items)==0:
             print("You dont have any item")
             continue
+
         player.choose_items()
         item_choice = int(input("Choose item : "))-1
+        check_number =len(player.items)
+        if item_choice+1>=check_number:
+            print("Wrong numer")
+            item_choice =1 
+            continue
         item = player.items[item_choice]
         item_dmg = item.generate_item_dmg()
         if item.type=="potion":
@@ -156,5 +176,4 @@ while(game):
     if enemy.get_hp()==0:
         print("You win")
         break
-    
     
