@@ -5,7 +5,7 @@ import random
 
 
 
-#dark magic(attack)
+#dark magic(attack)█
 
 fire = Spell("fire",20,150,"dark",0)
 zap = Spell("zap",10,50,"dark",0)
@@ -57,7 +57,12 @@ player4= Person("Clik  ",30,600,75,10,[fire,zap,blizzard,heal,healius,poison],10
 
 players = [player1,player2,player3,player4]
 
-enemy = Person("Demon ",40,3200,50,30,[],3,[],[])
+enemy1 = Person("Demon ",40,3500,50,30,[],3,[],[])
+enemy2 = Person("Imp   ",40,1500,100,30,[],3,[],[])
+enemy3 = Person("devil ",40,1500,100,30,[],3,[],[])
+
+enemies =[enemy1,enemy2,enemy3]
+
 
 
 
@@ -73,7 +78,8 @@ enemy_atc = enemy.get_atc()
 """
 game = True
 print("An enemy attack")
-enemy.generate_information()
+for enemy in enemies:
+    enemy.generate_information()
 for player in players:
     player.generate_information()
 
@@ -84,20 +90,23 @@ player.generate_information()
 
 while(game):
 #=======================================ACTIONS=====================================
-    print("===========================================================================")
+    print("==============================HEROES====================================")
     print("NAME                              HP                                 MP               ")
     for player in players:
         player.get_stats()
         print("\n")
     print("======================ENEMIES============================")
     print("\n")
-    print("NAME                              HP                                ")
-
-    enemy.get_enemy_stats()
+    print("NAME                                               HP                                ")
+    for enemy in enemies:
+        enemy.get_enemy_stats()
+        print("\n")
 
     print("===================================================== \n")
     for player in players:
         print(player.get_name()," :  \n")
+        
+    
         player.choose_action()
         choice = input("Choose action :")
         number = int(choice)-1
@@ -110,16 +119,19 @@ while(game):
     
 #=======================================ATTACK========================================
         if number == 0:
+            enemy = player.choose_target(enemies)
+            check_number =len(player.magic)
             dmg = player.generate_dmg()
-            if enemy.dodge_chance():
-                enemy.take_dmg(dmg)
-                print("you attack for",dmg, "life points. Enemy life: ", enemy.get_hp())
+            if enemies[enemy].dodge_chance():
+                enemies[enemy].take_dmg(dmg)
+                print("you attack",enemies[enemy].name,"for",dmg, "life points. Enemy life: ", enemies[enemy].get_hp())
                 print("===================================================== \n")
             else:
                 print("enemy dodge the attack")
                 print("===================================================== \n")
 #======================================MAGIC==========================================
         if number == 1:
+
             print("You have ",player.get_mp(),"magic points")
             player.choose_magic()
             magic_choose = int(input("choose magic: "))-1
@@ -141,8 +153,9 @@ while(game):
                 continue
             if spell.type=="dark":
                 player.reduce_mp(spell.cost)
-                enemy.take_dmg(spell_dmg)
-                print("You attack enemy for",spell.dmg,"life point. Enemy Life", enemy.get_hp())
+                enemy = player.choose_target(enemies)
+                enemies[enemy].take_dmg(spell_dmg)
+                print("You attack",enemies[enemy].name ,"enemy for",spell.dmg,"life point. Enemy Life", enemies[enemy].get_hp())
                 print("===================================================== \n")
             elif spell.type=="light":
                 player.reduce_mp(spell.cost)
@@ -150,8 +163,9 @@ while(game):
                 print("you heal yourself for",spell.dmg,"life point. Your Life", player.get_hp())
                 print("===================================================== \n")
             elif spell.type=="poison":
+                poisoned = player.choose_target(enemies)
                 player.reduce_mp(spell.cost)
-                print("You choose poison. Poison will deal damage for 5 turns")
+                print("You choose poison. Poison will deal damage to",enemies[poisoned].name,"for 5 turns")
                 turn = poison.get_spell_turn()
                 print("===================================================== \n")
          
@@ -172,12 +186,14 @@ while(game):
                 continue
             item = player.items[item_choice]
             item_dmg = item.generate_item_dmg()
+            enemy = player.choose_target(enemies)
             if item.type=="potion":
                 player.heal(item_dmg)
                 print("You heal yourself with", item.name,"for",item_dmg,"hp")
                 print("===================================================== \n")
             if item.type=="attack":
-                enemy.take_dmg(item_dmg)
+                enemy =player.choose_target(enemies)
+                enemies[enemy].take_dmg(item_dmg)
                 print("You attack enemy with", item.name,"for",item_dmg)
                 print("===================================================== \n")
             if item.type=="elixer":
@@ -187,8 +203,8 @@ while(game):
             if item.type=="attheal":
                 glass_points = random.randrange(0,800)
                 if glass_points>300:
-                    enemy.take_dmg(glass_points-300)
-                    print("You hit enemy for",glass_points-300,"with glass cannon")
+                    enemies[enemy].take_dmg(glass_points-300)
+                    print("You hit",enemies[enemy].name,"for",glass_points-300,"with glass cannon")
                     print("===================================================== \n")
                 else:
                     player.take_dmg(glass_points)
@@ -202,30 +218,26 @@ while(game):
             if item_choice==-1:
                 continue
 #================================POISON==========================================
+#TODO add multiple number of poisoned enemy
         if turn>0:
             poison_dmg =poison.generate_damage()
-            print("poison deal",poison_dmg,"damage. turns left: ",turn)
-            enemy.take_dmg(poison_dmg)
+            print("poison deal",poison_dmg,"damage for",enemies[poisoned].name ,". turns left: ",turn)
+            enemies[poisoned].take_dmg(poison_dmg)
             turn-=1
 
 #===================================ENEMY=========================================
-    enemy_choice = 1
-    if enemy.get_hp()==0:
-        print("You win")
-        break
-    if player.dodge_chance():
-        enemy_dmg = enemy.generate_dmg()
-        player2.take_dmg(enemy_dmg)
-        print("Enemy attack for",enemy_dmg,"life point. Your life: ",player.get_hp())
-    else:
-        print("you dodge the attack")
+    for enemy in enemies:
 
-    print("===========================================")
+        if enemy.get_hp()==0:
+            print("You win")
+            break
+        if player.dodge_chance():
+            enemy_dmg = enemy.generate_dmg()
+            player2.take_dmg(enemy_dmg)
+            print(enemy.name,"attack for",enemy_dmg,"life point. Your life: ",player.get_hp())
+        else:
+            print("you dodge the attack")
 
-    if player.get_hp()==0:
-        print("You lose")
-        break
-
-    
-    
-    
+        if player.get_hp()==0:
+            print("You lose")
+            break
