@@ -1,6 +1,8 @@
 from classes.game import Person, bcolors
 from classes.magic import Spell
 from classes.item import Armor, Items
+import random
+#TODO poison spell
 
 """
 print("\n\n")
@@ -15,15 +17,18 @@ print("                             _________________________     __________")
 print("Gopis:     500/500          [████████████             ]   [          ]")
 """
 #dark magic(attack)██████████
-fire = Spell("fire",20,150,"dark")
-zap = Spell("zap",10,50,"dark")
-earthquake = Spell("earthquake",5,40,"dark")
-blizzard = Spell("blizzard",13,75,"dark")
-apocalipto = Spell("apocalipto",50,300,"dark")
+fire = Spell("fire",20,150,"dark",0)
+zap = Spell("zap",10,50,"dark",0)
+earthquake = Spell("earthquake",5,40,"dark",0)
+blizzard = Spell("blizzard",13,75,"dark",0)
+apocalipto = Spell("apocalipto",50,300,"dark",0)
 
 #light magic(heal)
-heal = Spell("heal",10,75,"light")
-healius = Spell("healius",25,250,"light")
+heal = Spell("heal",10,75,"light",0)
+healius = Spell("healius",25,250,"light",0)
+
+#poison magic(damage per turn)
+poison = Spell("poison",20,40,"poison",5)
 
 
 #heal items
@@ -34,9 +39,10 @@ megaelixer = Items("megaelixer","elixer","fully restores HP/MP of one party memb
 hielixer = Items("hielixer","elixer","fully restores party members HP/MP",9999,1)
 
 #attack items
-granade= Items("granade","attack","attack for 500 hp",500,2)
+granade= Items("granade","attack","attack for 200 hp",500,2)
 
-
+#attack-heal items
+glass_cannon = Items("glass cannon","attheal","attack your enemy for 0-500 hp or hit you for 0-300 hp",0,2)
 
 
 #items(armor)TODO
@@ -47,12 +53,11 @@ wizard_hat = Armor("wizard hat",0,0,5,5,10)
 speed_boots = Armor("speed boots",0,20,15,5,0)
 chest = Armor("chest",0,300,2,20,0)
 
-items =[potion,hipotion,megaelixer,granade]
+items =[potion,hipotion,megaelixer,granade,glass_cannon]
 
 #persons
-player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius],10,[],items) 
-player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius],10,[],items) 
-player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius],10,[],items) 
+player = Person(50,500,75,10,[fire,zap,blizzard,heal,healius,poison],10,[],items) 
+ 
 
 enemy = Person(40,1200,50,30,[],3,[],[])
 
@@ -60,7 +65,7 @@ enemy = Person(40,1200,50,30,[],3,[],[])
 print("==============================")
 
 
-
+turn = 0
 player_hp = player.get_hp()
 enemy_hp = enemy.get_hp()
 player_atc = player.get_atc()
@@ -80,7 +85,7 @@ while(game):
     choice = input("Choose action :")
     number = int(choice)-1
     check_number =len(player.items)
-    if number+1>=check_number:
+    if number>=check_number:
         print("Wrong numer")
         continue
 
@@ -100,13 +105,14 @@ while(game):
         player.choose_magic()
         magic_choose = int(input("choose magic: "))-1
         check_number =len(player.magic)
-        if magic_choose+1>=check_number:
+        if magic_choose>=check_number:
             print("Wrong numer")        
             continue
         if magic_choose==-1:
             continue
        
        
+
         spell = player.magic[magic_choose]
         spell_dmg = spell.generate_damage()
 
@@ -122,6 +128,11 @@ while(game):
             player.reduce_mp(spell.cost)
             player.heal(spell_dmg)
             print("you heal yourself for",spell.dmg,"life point. Your Life", player.get_hp())
+        elif spell.type=="poison":
+            player.reduce_mp(spell.cost)
+            print("You choose poison. Poison will deal damage for 5 turns")
+            turn = poison.get_spell_turn()
+         
 
 #===================================ITEMS=======================================
 
@@ -133,7 +144,7 @@ while(game):
         player.choose_items()
         item_choice = int(input("Choose item : "))-1
         check_number =len(player.items)
-        if item_choice+1>=check_number:
+        if item_choice>=check_number:
             print("Wrong numer")
             item_choice =1 
             continue
@@ -149,16 +160,33 @@ while(game):
             player.hp = player.mhp
             player.mp = player.mmp
             print("Fully restores mp/hp")
+        if item.type=="attheal":
+            glass_points = random.randrange(0,800)
+            if glass_points>300:
+                enemy.take_dmg(glass_points-300)
+                print("You hit enemy for",glass_points-300,"with glass cannon")
+            else:
+                player.take_dmg(glass_points)
+                print("You hit yourself for",glass_points,"with glass cannon")
+
         item.reduce_item_quantity()
         if item.quantity==0:
             remove = player.items
             remove.remove(item)
         if item_choice==-1:
             continue
+#================================POISON==========================================
+    if turn>0:
+        poison_dmg =poison.generate_damage()
+        print("poison deal",poison_dmg,"damage. turns left: ",turn)
+        enemy.take_dmg(poison_dmg)
+        turn-=1
 
 #===================================ENEMY=========================================
     enemy_choice = 1
-
+    if enemy.get_hp()==0:
+        print("You win")
+        break
     if player.dodge_chance():
         enemy_dmg = enemy.generate_dmg()
         player.take_dmg(enemy_dmg)
@@ -173,7 +201,5 @@ while(game):
     if player.get_hp()==0:
         print("You lose")
         break
-    if enemy.get_hp()==0:
-        print("You win")
-        break
+
     
