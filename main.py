@@ -85,8 +85,8 @@ while(game):
     choice = input("Choose action :")
     number = int(choice)-1
     check_number =len(player.items)
-    if number>=check_number:
-        print("Wrong numer")
+    if number+2>=check_number:
+        print("Wrong number")
         continue
 
     print("you choose ",player.actions[number])
@@ -202,4 +202,5 @@ while(game):
         print("You lose")
         break
 
+    
     
