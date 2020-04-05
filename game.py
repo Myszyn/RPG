@@ -99,6 +99,17 @@ class Person:
         for items in self.items:
             print(str(i),":",items.name,"  :",str(items.description),"(x",items.quantity,")")
             i+=1
+    def choose_target(self,enemies):
+        print("Target")
+        i=1
+        for enemy in enemies:
+            print(str(i),": ",enemy.name)
+            i+=1
+
+        choice = int(input("choose target"))-1
+        return choice
+
+   
 #==========================================================================================================
     def generate_information(self):
         print(self.name, self.hp , " life points","/",self.atc,"attack points")
@@ -149,11 +160,11 @@ class Person:
     def get_enemy_stats(self):
         hp_bar  = ""
         mp_bar  = ""
-        hp_bar_ticks = (self.hp/self.mhp)*100/4
+        hp_bar_ticks = (self.hp/self.mhp)*100/2
         while hp_bar_ticks>0:
             hp_bar+="█"
             hp_bar_ticks -=1
-        while len(hp_bar)<25:
+        while len(hp_bar)<50:
             hp_bar+=" "
 
         hp_string= str(self.hp)+"/"+str(self.mhp)
@@ -167,15 +178,3 @@ class Person:
 
 
         print(self.name,":     ",hp_string,"[",hp_bar,"]  ")
-
-
-
-
-
-
-
-        
-            
-
-
-
