@@ -81,6 +81,7 @@ class Person:
             i+=1
 #==========================CHOOSE_STH=============================================================
     def choose_magic(self):
+        print("===================================================== \n")
         print("MAGIC")
         i = 1 
         for spell in self.magic:
@@ -94,19 +95,23 @@ class Person:
             print(str(i),":",armor.name,"attack:",str(armor.atc),"health points:",str(armor.hp))
             i+=1
     def choose_items(self):
+        print("===================================================== \n")
         print("Choose items")
         i=1
         for items in self.items:
             print(str(i),":",items.name,"  :",str(items.description),"(x",items.quantity,")")
             i+=1
     def choose_target(self,enemies):
+        print("===================================================== \n")
         print("Target")
         i=1
         for enemy in enemies:
-            print(str(i),": ",enemy.name)
-            i+=1
+            if enemy.hp!=0:
+                print(str(i),": ",enemy.name)
+                i+=1
 
-        choice = int(input("choose target"))-1
+        choice = int(input("choose target :"))-1
+
         return choice
 
    
@@ -178,3 +183,9 @@ class Person:
 
 
         print(self.name,":     ",hp_string,"[",hp_bar,"]  ")
+        def check_enemy_hp(self,enemy):
+            if enemy.hp==0:
+                return False
+            if enemy.hp>0:
+                return True
+
