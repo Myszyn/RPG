@@ -188,4 +188,17 @@ class Person:
                 return False
             if enemy.hp>0:
                 return True
-
+    def choose_enemy_spell(self):
+        
+        magic_choice = random.randrange(0,len(self.magic))
+        spell = self.magic[magic_choice]
+        magic_dmg  = spell.generate_damage()
+        percent = self.hp/self.mhp * 100
+        if self.mp < spell.cost or spell.type == "light" and percent>50 :
+            spell = self.magic[4]
+            magic_dmg  = spell.generate_damage()
+            return spell, magic_dmg
+            
+        else:
+            return spell, magic_dmg
+        
