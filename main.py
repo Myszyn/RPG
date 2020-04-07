@@ -6,7 +6,7 @@ import random
 
 
 #dark magic(attack)█
-
+normalius = Spell("normalius",0,random.randrange(50,100),"dark",0)
 fire = Spell("fire",20,150,"dark",0)
 zap = Spell("zap",10,50,"dark",0)
 earthquake = Spell("earthquake",5,40,"dark",0)
@@ -44,6 +44,7 @@ speed_boots = Armor("speed boots",0,20,15,5,0)
 chest = Armor("chest",0,300,2,20,0)
 
 items =[potion,hipotion,megaelixer,granade,glass_cannon]
+enemy_speel=[fire,zap,blizzard,heal,normalius]
 
 #persons
 #antek mage
@@ -59,9 +60,9 @@ players = [player1,player2,player3,player4]
 
 
 #======================ENEMIES===================
-enemy1 = Person("Demon ",40,350,50,30,[],3,[],[])
-enemy2 = Person("Imp   ",100,150,100,30,[],3,[],[])
-enemy3 = Person("devil ",100,150,100,30,[],3,[],[])
+enemy1 = Person("Demon ",500,1000,50,30,enemy_speel,3,[],[])
+enemy2 = Person("Imp   ",100,750,100,30,enemy_speel,3,[],[])
+enemy3 = Person("devil ",100,750,100,30,enemy_speel,3,[],[])
 
 enemies =[enemy1,enemy2,enemy3]
 
@@ -93,6 +94,9 @@ while(game):
     deafeated_players=0
     if len(enemies)==0:
                 print("You win")
+                break
+    if len(players)==0:
+                print("You lose")
                 break
 #=======================================ACTIONS=====================================
     print("==============================HEROES====================================")
@@ -138,11 +142,12 @@ while(game):
                 print("enemy dodge the attack")
                 print("===================================================== \n")
             if enemies[enemy].get_hp()==0:
-                 print(enemies[enemy].name,"is dead")
+                 print(enemies[enemy].name.replace(" ",""),"is dead")
                  del enemies[enemy]
             for enemy in enemies:
                  if enemy.hp == 0:
-                     deafeated_enemies +=1        
+                     deafeated_enemies +=1 
+                     del enemy
                  if len(enemies)==0:
                     print("You win")
                     break
@@ -172,7 +177,7 @@ while(game):
                 player.reduce_mp(spell.cost)
                 enemy = player.choose_target(enemies)
                 enemies[enemy].take_dmg(spell_dmg)
-                print("You attack",enemies[enemy].name ,"enemy for",spell.dmg,"life point. Enemy Life", enemies[enemy].get_hp())
+                print("You attack",enemies[enemy].name.replace(" ","") ,"enemy for",spell.dmg,"life point. Enemy Life", enemies[enemy].get_hp())
                 print("===================================================== \n")
             elif spell.type=="light":
                 player.reduce_mp(spell.cost)
@@ -182,7 +187,7 @@ while(game):
             elif spell.type=="poison":
                 poisoned = player.choose_target(enemies)
                 player.reduce_mp(spell.cost)
-                print("You choose poison. Poison will deal damage to",enemies[poisoned].name,"for 5 turns")
+                print("You choose poison. Poison will deal damage to",enemies[poisoned].name.replace(" ",""),"for 5 turns")
                 turn = poison.get_spell_turn()
                 print("===================================================== \n")
 
@@ -222,14 +227,14 @@ while(game):
                 glass_points = random.randrange(0,800)
                 if glass_points>300:
                     enemies[enemy].take_dmg(glass_points-300)
-                    print("You hit",enemies[enemy].name,"for",glass_points-300,"with glass cannon")
+                    print("You hit",enemies[enemy].name.replace(" ",""),"for",glass_points-300,"with glass cannon")
                     print("===================================================== \n")
                 else:
                     player.take_dmg(glass_points)
                     print("You hit yourself for",glass_points,"with glass cannon")
                     print("===================================================== \n")
             if enemies[enemy].get_hp()==0:
-                print(enemies[enemy].name,"is dead")
+                print(enemies[enemy].name.replace(" ",""),"is dead")
                 del enemies[enemy]
 
             item.reduce_item_quantity()
@@ -254,31 +259,54 @@ while(game):
             enemies[poisoned].take_dmg(poison_dmg)
             turn-=1
             if enemies[poisoned].get_hp()==0:
-                    print(enemies[poisoned].name,"is dead")
+                    print(enemies[poisoned].name.replace(" ",""),"is dead")
                     del enemies[poisoned]
 
 #===================================ENEMY=========================================
 
     for enemy in enemies:
-        if enemy.hp == 0:
-            deafeated_enemies +=1
+       
+        choice = random.randrange(0,2)
         for player in players:
             if player.hp == 0:
                 deafeated_players +=1
-        if player.dodge_chance():
-            if enemy.hp>0:
-                enemy_dmg = enemy.generate_dmg()
-                player2.take_dmg(enemy_dmg)
-                print(enemy.name,"attack for",enemy_dmg,"life point. Your life: ",player2.get_hp())
+        if choice==0:
+            if player.dodge_chance():
+                if enemy.hp>0:
+                    target = random.randrange(0,len(players))
+                    enemy_dmg = enemy.generate_dmg()
+                    players[target].take_dmg(enemy_dmg)
+                    print(enemy.name.replace(" ",""),"attack",players[target].name.replace(" ","") ,"for",enemy_dmg,"life point. Your life: ",players[target].get_hp())
+                    if players[target].get_hp()==0:
+                        print(players[target].name.replace(" ",""),"is dead.")
+                        del players[target]
+                        break
+            else:
+                print("you dodge",enemy.name.replace(" ",""),"'s"," attack")
+        elif choice ==1:
+            spell, magic_dmg = enemy.choose_enemy_spell()
+            if spell.type=="dark":
+                enemy.reduce_mp(spell.cost)
+                target = random.randrange(0,len(players))
+                players[target].take_dmg(magic_dmg)
+                print(enemy.name.replace(" ",""),"attacks",players[target].name,"with",spell.name,"for",spell.dmg,)
+               
 
-        else:
-            print("you dodge the attack")
-    for enemy in enemies:
-        if enemy.hp == 0:
-                deafeated_enemies +=1        
-        if len(enemies)==deafeated_enemies:
-            print("You win1")
-            game = False
+                if players[target].get_hp()==0:
+                    print(players[target].name.replace(" ",""),"is dead.")
+                    del players[target]
+            elif spell.type=="light":
+                enemy.reduce_mp(spell.cost)
+                enemy.heal(magic_dmg)
+                print (enemy.name.replace(" ",""),"heals yourself for",spell.dmg,"life point.",enemy.name ," Life", player.get_hp())
+                
+
+        #elif choice ==2:
+
+    if len(enemies)==deafeated_enemies:
+        print("You win")
+        game = False
     if len(players)==0:
         print("You lose")
         game = False
+        
