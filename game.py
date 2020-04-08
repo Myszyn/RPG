@@ -1,6 +1,6 @@
 import random
-from classes.magic import Spell
-from classes.item import Armor, Items
+import classes.magic
+import classes.item
 
 
 class bcolors:
@@ -201,4 +201,19 @@ class Person:
             
         else:
             return spell, magic_dmg
-        
+    
+    def receive_armor(self,armor):
+        self.atc += armor.atc
+        self.mhp += armor.hp
+        self.hp = self.mhp
+        self.dodge += armor.dodge
+        self.df += armor.df
+        self.mmp += armor.mp
+        self.mp = self.mmp
+    def choose_armor(self):
+        i = 1
+        print("Choose armor")
+        for eq in self.armor:
+
+            print(str(i),":",eq.name," HP points ","[",eq.hp,"]"," MP points","[",eq.mp,"]"," Damage","[",eq.atc,"]")
+            i+=1
