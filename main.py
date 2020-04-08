@@ -36,25 +36,25 @@ glass_cannon = Items("glass cannon","attheal","attack your enemy for 0-500 hp or
 
 
 #items(armor)TODO
-helmet = Armor("helmet",0,100,0,10,0)
-sword = Armor("sword",15,0,5,0,0)
-wand = Armor("wand",10,0,0,0,30)
-wizard_hat = Armor("wizard hat",0,0,5,5,10)
-speed_boots = Armor("speed boots",0,20,15,5,0)
-chest = Armor("chest",0,300,2,20,0)
+helmet = Armor("helmet     ",0,100,0,10,0)
+sword = Armor("sword      ",15,110,5,0,0)
+wand = Armor("wand       ",10,0,110,0,30)
+wizard_hat = Armor("wizard hat ",0,110,5,5,10)
+speed_boots = Armor("speed boots",0,210,15,5,0)
+chest = Armor("chest      ",0,300,2,20,0)
 
 items =[potion,hipotion,megaelixer,granade,glass_cannon]
 enemy_speel=[fire,zap,blizzard,heal,normalius]
 
 #persons
 #antek mage
-player1 = Person("Antek ",50,500,75,10,[fire,zap,blizzard,heal,healius,poison],10,[],items)
+player1 = Person("Antek ",50,500,75,10,[fire,zap,blizzard,heal,healius,poison],10,[wand,wizard_hat,speed_boots],items)
 #franek warior
-player2= Person("Franek",20,800,40,10,[fire,zap,blizzard,heal,healius,poison],10,[],items)
+player2= Person("Franek",20,800,40,10,[fire,zap,blizzard,heal,healius,poison],10,[wizard_hat,speed_boots],items)
 #james assasin
-player3 = Person("James ",70,300,20,10,[fire,zap,blizzard,heal,healius,poison],25,[],items)
+player3 = Person("James ",70,300,20,10,[fire,zap,blizzard,heal,healius,poison],25,[wand,wizard_hat,speed_boots],items)
 #clik healer
-player4= Person("Clik  ",30,600,75,10,[fire,zap,blizzard,heal,healius,poison],10,[],items) 
+player4= Person("Clik  ",30,600,75,10,[fire,zap,blizzard,heal,healius,poison],10,[wand,wizard_hat,speed_boots],items) 
 
 players = [player1,player2,player3,player4]
 
@@ -65,8 +65,29 @@ enemy2 = Person("Imp   ",100,750,100,30,enemy_speel,3,[],[])
 enemy3 = Person("devil ",100,750,100,30,enemy_speel,3,[],[])
 
 enemies =[enemy1,enemy2,enemy3]
+print("GET READY FOR THE BATTLE")
+def choice_eq():
+    for player in players:
+
+        print(player.name,"\n")
+        player.choose_armor()
+    
+        choice = int(input("Choose armor :"))-1
+
+        check_number =len(player.armor)
+        if choice>=check_number:
+              print("Wrong numer")
+              item_choice =1 
+              choice_eq()   
+        
+       armor_choice = player.armor[choice]
+        print("You choose ",armor_choice.name)
+        player.receive_armor(armor_choice)
 
 
+
+
+choice_eq()
 
 
 print("==============================")
@@ -309,4 +330,3 @@ while(game):
     if len(players)==0:
         print("You lose")
         game = False
-        
