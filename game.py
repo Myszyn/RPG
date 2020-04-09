@@ -111,7 +111,8 @@ class Person:
                 i+=1
 
         choice = int(input("choose target :"))-1
-
+        
+                    
         return choice
 
    
