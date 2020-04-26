@@ -1,7 +1,6 @@
 import random
-import classes.magic
-import classes.item
-
+from classes.magic import Spell
+from classes.item import Armor, Items
 
 class bcolors:
     HEADER = '\033[95m'
@@ -14,7 +13,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Person:
-    def __init__(self,name,atc, hp, mp, df, magic, dodge,armor,items):
+    def __init__(self,name,atc, hp, mp, df, magic, dodge,armor,items,position):
         self.atc = atc
         self.atkl = atc-10
         self.atkh =  atc+10
@@ -25,13 +24,39 @@ class Person:
         self.df = df
         self.magic = magic
         self.armor = armor
-        self.actions = ["Attack ","Magic","Items"]
+        self.actions = ["Attack ","Magic","Items","Move"]
+        self.directory = ["Up","Down","Left","Right"]
         self.dodge = dodge
         self.items = items
         self.name = name
+        self.position = position
+
+
+       
 
     def generate_dmg(self):
         return random.randrange(self.atkl,self.atkh)
+
+    #movement ability
+    def change_position(self,decision):
+        if decision == 0:
+            self.position[1] += 1
+            if self.position[1] >  battle_map[1]:
+                self.position[1] == battle_map[1]
+        if decision == 1:
+            self.position[1] -= 1
+            if self.position[1] > battle_map[1]:
+                self.position[1] == battle_map[1]
+        if decision == 2:
+            self.position[0] -= 1
+            if self.position[0] > battle_map[0]:
+                self.position[0] == battle_map[0]
+        if decision == 3:
+            self.position[0] += 1
+            if self.position[0] > battle_map[0]:
+                self.position[0] == battle_map[0]
+
+
 
     def generate_spelldmg(self,i):
         mgl = self.magic[i]["dmg"]-5
@@ -68,18 +93,22 @@ class Person:
     def get_atc(self):
         return self.atc
 
+    def get_position(self):
+        return self.position
+
+
     def reduce_mp(self,cost):
         self.mp-=cost
         if self.mp<0:
             self.mp=0
-
+#==========================CHOOSE_STH=============================================================
     def choose_action(self):
         i=1
         print("ACTIONS")
         for item in self.actions:
             print(str(i),":",item)
             i+=1
-#==========================CHOOSE_STH=============================================================
+
     def choose_magic(self):
         print("===================================================== \n")
         print("MAGIC")
@@ -111,12 +140,32 @@ class Person:
                 i+=1
 
         choice = int(input("choose target :"))-1
-        
-                    
+                
         return choice
+
+    def choose_directory(self):
+        print("===================================================== \n")
+        print("directory")
+        for directory in self.directory:
+            i=1
+            print(str(i),":",directory)
+            i+=1
+            choice = int(input("choose directory :"))-1
+            return choice
+
+    def choose_armor(self):
+        i = 1
+        print("Choose armor")
+        for eq in self.armor:
+
+            print(str(i),":",eq.name," HP points ","[",eq.hp,"]"," MP points","[",eq.mp,"]"," Damage","[",eq.atc,"]")
+            i+=1
 
    
 #==========================================================================================================
+
+
+
     def generate_information(self):
         print(self.name, self.hp , " life points","/",self.atc,"attack points")
     def get_stats(self):
@@ -211,10 +260,3 @@ class Person:
         self.df += armor.df
         self.mmp += armor.mp
         self.mp = self.mmp
-    def choose_armor(self):
-        i = 1
-        print("Choose armor")
-        for eq in self.armor:
-
-            print(str(i),":",eq.name," HP points ","[",eq.hp,"]"," MP points","[",eq.mp,"]"," Damage","[",eq.atc,"]")
-            i+=1
