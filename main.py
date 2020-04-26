@@ -2,12 +2,44 @@ from classes.game import Person, bcolors
 from classes.magic import Spell
 from classes.item import Armor, Items
 import random
+
+
+
+
 def next_game():
-     next_game = upper(input("Do you wanna play again? Y/N"))
+     next_game = input("Do you wanna play again? Y/N :")
      if next_game == "Y":
         main_game()
      if next_game == "N":
         pass
+
+battle_map = {"x":10,"y":15}
+
+def make_map(enemies,players):
+    x = battle_map["x"]
+    y = battle_map["y"]
+    #creating tab
+    map_tab = [[0] * x for i in range(y)]
+    for i in range(y):
+        for j in range(x):
+            map_tab[i][j] = "█"
+
+    for enemy in enemies:
+        enemy_position = enemy.get_position()
+        enemy_name =enemy.get_name()
+        map_tab[enemy_position[1]][enemy_position[0]] = enemy_name[0]
+
+    for player in players:
+        player_position = player.get_position()
+        player_name =player.get_name()
+        map_tab[player_position[1]][player_position[0]] = player_name[0]
+    #making visual map     
+    print("MAP")       
+    for row in map_tab:
+        print(' '.join([str(elem) for elem in row]))
+
+
+
 
 #dark magic(attack)█
 normalius = Spell("normalius",0,random.randrange(50,100),"dark",0)
@@ -52,24 +84,24 @@ enemy_speel=[fire,zap,blizzard,heal,normalius]
 
 #persons
 #antek mage
-player1 = Person("Antek ",50,500,75,10,[fire,zap,blizzard,heal,healius,poison],10,[wand,wizard_hat,speed_boots],items)
+player1 = Person("Antek ",50,500,75,10,[fire,zap,blizzard,heal,healius,poison],10,[wand,wizard_hat,speed_boots],items,[2,2])
 #franek warior
-player2= Person("Franek",20,800,40,10,[fire,zap,blizzard,heal,healius,poison],10,[wizard_hat,speed_boots],items)
+player2= Person("Franek",20,800,40,10,[fire,zap,blizzard,heal,healius,poison],10,[wizard_hat,speed_boots],items,[4,2])
 #james assasin
-player3 = Person("James ",70,300,20,10,[fire,zap,blizzard,heal,healius,poison],25,[wand,wizard_hat,speed_boots],items)
+player3 = Person("James ",70,300,20,10,[fire,zap,blizzard,heal,healius,poison],25,[wand,wizard_hat,speed_boots],items,[6,2])
 #clik healer
-player4= Person("Clik  ",30,600,75,10,[fire,zap,blizzard,heal,healius,poison],10,[wand,wizard_hat,speed_boots],items) 
+player4= Person("Clik  ",30,600,75,10,[fire,zap,blizzard,heal,healius,poison],10,[wand,wizard_hat,speed_boots],items,[8,2]) 
 
 players = [player1,player2,player3,player4]
 
 
 #======================ENEMIES===================
-enemy1 = Person("Demon ",70,1000,50,30,enemy_speel,3,[],[])
-enemy2 = Person("Imp   ",100,750,100,30,enemy_speel,3,[],[])
-enemy3 = Person("Devil ",140,650,100,30,enemy_speel,3,[],[])
-enemy4 = Person("Babba ",60,1200,50,30,enemy_speel,3,[],[])
-enemy5 = Person("Kap   ",100,900,100,30,enemy_speel,3,[],[])
-enemy6 = Person("Axus ",90,800,100,30,enemy_speel,3,[],[])
+enemy1 = Person("Demon ",70,1000,50,30,enemy_speel,3,[],[],[2,14])
+enemy2 = Person("Imp   ",100,750,100,30,enemy_speel,3,[],[],[3,14])
+enemy3 = Person("Devil ",140,650,100,30,enemy_speel,3,[],[],[4,14])
+enemy4 = Person("Babba ",60,1200,50,30,enemy_speel,3,[],[],[6,14])
+enemy5 = Person("Kap   ",100,900,100,30,enemy_speel,3,[],[],[7,14])
+enemy6 = Person("Axus ",90,800,100,30,enemy_speel,3,[],[],[8,14])
 
 
 enemies_list =[enemy1,enemy2,enemy3,enemy4,enemy5,enemy6]
@@ -79,6 +111,8 @@ def main_game():
     enemies = enemies_list[0:3]
 
     print("GET READY FOR THE BATTLE")
+
+
     def choice_eq():
         for player in players:
 
@@ -124,6 +158,7 @@ def main_game():
     """
 
     while(game):
+        make_map(enemies,players)
         deafeated_enemies=0
         deafeated_players=0
         if len(enemies)==0:
@@ -323,6 +358,9 @@ def main_game():
                         if players[target].get_hp()==0:
                             print(players[target].name.replace(" ",""),"is dead.")
                             del players[target]
+                            if len(players)==0:
+                                print("YOU LOSE")
+                                game=False
                             break
                 else:
                     print("you dodge",enemy.name.replace(" ",""),"'s"," attack")
